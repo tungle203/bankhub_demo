@@ -13,7 +13,10 @@ const bankHubUrl = process.env.BANK_HUB_URL;
 const redirectUri = process.env.REDIRECT_URL;
 
 const app = express();
-const redis = new Redis();
+const redis = new Redis({
+    port: process.env.REDIS_PORT,
+    host: process.env.REDIS_HOST,
+});
 
 redis.on('connect', () => {
     console.log('Connected to Redis');
