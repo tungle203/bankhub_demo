@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>BANKHUB DEMO</title>
+    <link rel="stylesheet" href="stylesheets/style.css">
+</head>
+
+</html>
+
+<body>
+    <div class="container">
+        <h1>
+            Welcome to BANKHUB
+        </h1>
+        <div class="wrapper">
+            <h3>Bước 1: Kết nối ngân hàng</h3>
+            <button id="link-btn" class="button">Liên kết ngân hàng</button>
+        </div>
+
+        <div class="wrapper">
+            <h3>Bước 2: Truy vấn thông tin giao dịch</h3>
+            <button id="fetch-transactions" class="button">Truy vấn giao dịch</button>
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+</body>
+
+<script src="https://cdn.bankhub.dev/link/v1/link-initialize.js"></script>
+<script>
+    const baseUrl = "{{baseUrl}}"
+    let grantToken = null;
+    document.getElementById('link-btn').addEventListener('click', function () {
+        fetch(`${baseUrl}/grantToken`)
+            .then(response => response.json())
+            .then(data => {
+                const bankHubLinkConfigs = {
+                    redirectUri: baseUrl,
+                    iframe: true,
+                    grantToken: data.grantToken,
+                    feature: "all",
+                    fiServiceType: "all",
+                    onSuccess: (publicToken, state) => {
+                        fetch(`${baseUrl}/publicToken/${publicToken}`)
+                            .then()
+                    },
+                    onExit: () => { },
+                };
+                const { open } = BankHub.useBankHubLink(bankHubLinkConfigs);
+                open();
+            });
+    });
+
+    document.getElementById('fetch-transactions').addEventListener('click', function () {
+        fetch(`${baseUrl}/transactions`)
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = '';
+
+                data.accounts.forEach(account => {
+                    const accountDiv = document.createElement('div');
+                    accountDiv.className = 'account';
+                    accountDiv.innerHTML = `
+                            <h3>Thông tin tài khoản</h3>
+                            <p>Số tài khoản: ${account.accountNumber}</p>
+                            <p>Tên tài khoản: ${account.accountName}</p>
+                            <p>Số dư: ${account.balance} ${account.currency}</p>
+                        `;
+                    resultDiv.appendChild(accountDiv);
+                });
+
+                data.transactions.forEach(transaction => {
+                    const transactionDiv = document.createElement('div');
+                    transactionDiv.className = 'transaction';
+                    transactionDiv.innerHTML = `
+                            <h4>Ngày giao dịch: ${transaction.transactionDate}</h4>
+                            <p>Thời gian giao dịch: ${transaction.transactionDateTime}</p>
+                            <p>Số tiền: ${transaction.amount}</p>
+                            <p>Nội dung: ${transaction.description}</p>
+                        `;
+                    resultDiv.appendChild(transactionDiv);
+                });
+            })
+            .catch(error => {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = "Bạn chưa liên kết ngân hàng hoặc hệ thống đang có lỗi.";
+            });
+    });
+</script>

@@ -1,0 +1,58 @@
+body {
+  font-family: Arial, sans-serif;
+ 
+}
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.wrapper {
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.result {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  border-color: transparent;
+}
+.account, .transaction {
+  margin-bottom: 5px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+.transaction {
+  background-color: #f9f9f9;
+}
+
+.button {
+  transition-duration: 0.4s;
+  font-size: 16px;
+  width: 200px;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+  border-color: #000;
+}
+
+.button:hover {
+  background-color: #000;
+  color: white;
+  cursor: pointer;
+}
+
+p {
+  margin: 0;
+}
