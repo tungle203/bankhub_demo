@@ -32,7 +32,7 @@
     const baseUrl = "{{baseUrl}}"
     let grantToken = null;
     document.getElementById('link-btn').addEventListener('click', function () {
-        fetch(`${baseUrl}/grantToken`)
+        fetch(`${baseUrl}/api/grantToken`)
             .then(response => response.json())
             .then(data => {
                 const bankHubLinkConfigs = {
@@ -42,7 +42,7 @@
                     feature: "all",
                     fiServiceType: "all",
                     onSuccess: (publicToken, state) => {
-                        fetch(`${baseUrl}/publicToken/${publicToken}`)
+                        fetch(`${baseUrl}/api/publicToken/${publicToken}`)
                             .then()
                     },
                     onExit: () => { },
@@ -53,7 +53,7 @@
     });
 
     document.getElementById('fetch-transactions').addEventListener('click', function () {
-        fetch(`${baseUrl}/transactions`)
+        fetch(`${baseUrl}/api/transactions`)
             .then(response => response.json())
             .then(data => {
                 const resultDiv = document.getElementById('result');
@@ -64,9 +64,9 @@
                     accountDiv.className = 'account';
                     accountDiv.innerHTML = `
                             <h3>Thông tin tài khoản</h3>
-                            <p>Số tài khoản: ${account.accountNumber}</p>
-                            <p>Tên tài khoản: ${account.accountName}</p>
-                            <p>Số dư: ${account.balance} ${account.currency}</p>
+                            <p><strong>Số tài khoản: </strong> ${account.accountNumber}</p>
+                            <p><strong>Tên tài khoản: </strong> ${account.accountName}</p>
+                            <p><strong>Số dư: </strong>${account.balance} ${account.currency}</p>
                         `;
                     resultDiv.appendChild(accountDiv);
                 });
