@@ -40,7 +40,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/grantToken', async (req, res) => {
+app.get('/api/grantToken', async (req, res) => {
     const config = {
         headers: {
             'X-Client-ID': clientId,
@@ -65,7 +65,7 @@ app.get('/grantToken', async (req, res) => {
     }
 });
 
-app.get('/publicToken/:token', async (req, res) => {
+app.get('/api/publicToken/:token', async (req, res) => {
     const publicToken = req.params.token;
     const config = {
         headers: {
@@ -85,11 +85,11 @@ app.get('/publicToken/:token', async (req, res) => {
         redis.set('accessToken', response.data.accessToken);
         return res.sendStatus(201);
     } catch (error) {
-        return res.sendStatus(500);
+        return res.sendStatus(404);
     }
 });
 
-app.get('/transactions', async (req, res) => {
+app.get('/api/transactions', async (req, res) => {
     try {
         const accessToken = await redis.get('accessToken');
         const config = {
@@ -103,7 +103,7 @@ app.get('/transactions', async (req, res) => {
         const response = await axios.get(`${bankHubUrl}/transactions`, config);
         return res.json(response.data).status(200);
     } catch (error) {
-        return res.send(error).status(500);
+        return res.sendStatus(500);
     }
 });
 
