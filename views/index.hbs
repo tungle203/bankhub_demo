@@ -21,7 +21,7 @@
 
         <div class="wrapper">
             <h3>Bước 2: Truy vấn thông tin giao dịch</h3>
-            <button id="fetch-transactions" class="button">Truy vấn giao dịch</button>
+            <button id="fetch-transactions" class="button1" disabled>Truy vấn giao dịch</button>
             <div id="result" class="result"></div>
         </div>
     </div>
@@ -31,7 +31,14 @@
 <script>
     const baseUrl = "{{baseUrl}}"
     let grantToken = null;
-    document.getElementById('link-btn').addEventListener('click', function () {
+    const linkButton = document.getElementById('link-btn')
+    const fetchTrans = document.getElementById('fetch-transactions')
+
+    if({{hasAccessToken}}) {
+        fetchTrans.disabled = false;
+        fetchTrans.className = 'button';
+    }
+    linkButton.addEventListener('click', function () {
         fetch(`${baseUrl}/api/grantToken`)
             .then(response => response.json())
             .then(data => {
@@ -44,6 +51,8 @@
                     onSuccess: (publicToken, state) => {
                         fetch(`${baseUrl}/api/publicToken/${publicToken}`)
                             .then()
+                        fetchTrans.disabled = false;
+                        fetchTrans.className = 'button';
                     },
                     onExit: () => { },
                 };
@@ -52,7 +61,7 @@
             });
     });
 
-    document.getElementById('fetch-transactions').addEventListener('click', function () {
+    fetchTrans.addEventListener('click', function () {
         fetch(`${baseUrl}/api/transactions`)
             .then(response => response.json())
             .then(data => {
@@ -85,7 +94,7 @@
             })
             .catch(error => {
                 const resultDiv = document.getElementById('result');
-                resultDiv.innerHTML = "Bạn chưa liên kết ngân hàng hoặc hệ thống đang có lỗi.";
+                resultDiv.innerHTML = "Vui lòng thử lại sau!...";
             });
     });
 </script>

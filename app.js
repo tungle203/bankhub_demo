@@ -13,6 +13,14 @@ const bankHubUrl = process.env.BANK_HUB_URL;
 const redirectUri = process.env.REDIRECT_URL;
 
 const app = express();
+app.set('view engine', '.hbs');
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
 const redis = new Redis({
     port: process.env.REDIS_PORT,
     host: process.env.REDIS_HOST,
@@ -32,13 +40,6 @@ app.engine(
         extname: '.hbs',
     }),
 );
-app.set('view engine', '.hbs');
-app.set('views', path.join(__dirname, 'views'));
-
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/grantToken', async (req, res) => {
     const config = {
@@ -107,9 +108,19 @@ app.get('/api/transactions', async (req, res) => {
     }
 });
 
-app.get('/', (req, res) => {
-    res.render('index', {
-        baseUrl: baseUrl,
+app.get('/', async (req, res) => {
+    redis.get('accessToken', (err, accessToken) => {
+        if (err) {
+            res.render('index', {
+                baseUrl: baseUrl,
+                hasAccessToken: false,
+            });
+        } else {
+            res.render('index', {
+                baseUrl: baseUrl,
+                hasAccessToken: !!accessToken,
+            });
+        }
     });
 });
 
